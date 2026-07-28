@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+.venv/
+
+# VS Code
+.vscode/
+
+# Temporary folders
+scratch/
+
+# Output Videos
+output*.mp4
+
+# Input Videos
+input*.mp4
+ib.mp4
+
+# Logs
+*.log
+
+# System files
+.DS_Store
+Thumbs.db

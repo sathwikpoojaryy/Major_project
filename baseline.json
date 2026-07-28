@@ -1,0 +1,80 @@
+{
+    "static_desk_objects": [
+        {
+            "label": "static_paper_0",
+            "bbox": [
+                91,
+                284,
+                190,
+                316
+            ],
+            "area": 995.1261402988985,
+            "aspect_ratio": 2.9963435955115365
+        },
+        {
+            "label": "static_paper_1",
+            "bbox": [
+                96,
+                294,
+                204,
+                329
+            ],
+            "area": 1066.4084946587766,
+            "aspect_ratio": 3.5494342116800874
+        },
+        {
+            "label": "static_paper_2",
+            "bbox": [
+                574,
+                297,
+                681,
+                349
+            ],
+            "area": 3094.9943552663117,
+            "aspect_ratio": 1.843025857461068
+        },
+        {
+            "label": "static_paper_3",
+            "bbox": [
+                672,
+                119,
+                715,
+                150
+            ],
+            "area": 565.3631247125153,
+            "aspect_ratio": 1.2415236021132146
+        },
+        {
+            "label": "static_paper_4",
+            "bbox": [
+                165,
+                272,
+                252,
+                315
+            ],
+            "area": 2035.4482614968722,
+            "aspect_ratio": 1.8991810439803214
+        },
+        {
+            "label": "static_paper_5",
+            "bbox": [
+                659,
+                294,
+                679,
+                310
+            ],
+            "area": 146.53795475378425,
+            "aspect_ratio": 1.252284541618361
+        }
+    ],
+    "writing_posture": {
+        "pitch_mean": -26.706141184007397,
+        "pitch_std": 12.997825783732582,
+        "yaw_mean": -144.14662167886507,
+        "yaw_std": 21.58915110792774
+    },
+    "writing_wrist_movement": {
+        "min_wrist_to_hip_ratio": 0.10330998932178052,
+        "pocket_proximity_thresh_ratio": 0.12
+    }
+}
