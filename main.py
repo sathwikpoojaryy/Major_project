@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+# pyrefly: ignore [missing-import]
 import mediapipe as mp
 import os
 import json
@@ -569,18 +570,6 @@ while cap.isOpened():
             "confirmed_cheating": is_cheating
         }
 
-        # ── Draw ─────────────────────────────────────────────
-        col   = DIR_COLOR.get(info["direction"], (200, 200, 200))
-        label = f"ID:{tid}  {info['direction']}"
-
-        cv2.rectangle(frame, (info["x1"], info["y1"]), (info["x2"], info["y2"]), col, 2)
-        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
-        lx = info["x1"]
-        ly = max(info["y1"] - 6, th + 6)
-        cv2.rectangle(frame, (lx, ly-th-4), (lx+tw+6, ly+2), col, cv2.FILLED)
-        cv2.putText(frame, label, (lx+3, ly-2),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 0, 0), 2)
-
     # ── Cheat Sheet Passing Detection ────────────────────────
     confirmed_passing_pairs = interaction_detector.update(
         active_students_frame,
@@ -588,6 +577,47 @@ while cap.isOpened():
         timestamp_str,
         fidx
     )
+
+    # Collect student IDs involved in confirmed passing alerts
+    passing_student_ids = set()
+    for pair in confirmed_passing_pairs:
+        passing_student_ids.add(pair[0])
+        passing_student_ids.add(pair[1])
+    for (sA, sB), p_tracker in interaction_detector.state_machines.items():
+        if p_tracker.state == "PASSING_CONFIRMED":
+            passing_student_ids.add(sA)
+            passing_student_ids.add(sB)
+
+    # ── Draw Student Bounding Boxes & ID Labels (Green until alert, Red after alert) ──
+    for tid, info in track_info.items():
+        c_st = cheating_db.get(tid)
+        is_indiv_cheating = False
+        if c_st:
+            is_indiv_cheating, _ = decision_engine.evaluate(c_st)
+
+        is_passing_alert = (tid in passing_student_ids)
+
+        direction = info.get("direction", "UNKNOWN")
+        state_name = c_st.state if c_st else "NORMAL"
+
+        if is_indiv_cheating or is_passing_alert:
+            box_col = (0, 0, 255)   # RED after alert is triggered
+        else:
+            box_col = DIR_COLOR.get(direction, (0, 255, 0))
+
+        cv2.rectangle(frame, (info["x1"], info["y1"]), (info["x2"], info["y2"]), box_col, 2)
+
+        # Draw ID and head pose / state label tag
+        label = f"ID:{tid} {direction}"
+        if state_name != "NORMAL":
+            label += f" [{state_name}]"
+
+        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.60, 2)
+        lx = info["x1"]
+        ly = max(info["y1"] - 6, th + 6)
+        cv2.rectangle(frame, (lx, ly - th - 4), (lx + tw + 6, ly + 2), box_col, cv2.FILLED)
+        cv2.putText(frame, label, (lx + 3, ly - 2),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.60, (0, 0, 0) if box_col != (0, 0, 255) else (255, 255, 255), 2)
 
     # ── Draw Cheating Warning Banners ────────────────────────
     alert_y = 25
